@@ -24,14 +24,14 @@ def main():
         return edl.losses.EvidentialRegression(true, pred, coeff=1e-2)
 
     # Compile and fit the model!
-    opt = torch.optim.Adam(model.parameters(), lr=1e-4)
+    opt = torch.optim.Adam(model.parameters())
     for t in range(500):
         opt.zero_grad()
         y_pred = model(x_train)   #x is tensor of independent vars
         loss = EvidentialRegressionLoss(y_train, y_pred) #y is tensor of outcomes
         loss.backward()
         opt.step()
-        print('epoch: {0}, loss: {1}'.format(t, loss))
+        if not (t + 1) % 100 or t == 0: print('epoch: {0}, loss: {1}'.format(t, loss))
 
     # Predict and plot using the trained model
     y_pred = model(x_test)
