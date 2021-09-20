@@ -1,5 +1,0 @@
-.idea
-VideoPose3D/data/data_2d_h36m_cpn_ft_h36m_dbb.npz
-VideoPose3D/data/data_2d_h36m_detectron_ft_h36m.npz
-VideoPose3D/data/data_2d_h36m_gt.npz
-VideoPose3D/data/data_3d_h36m.npz
