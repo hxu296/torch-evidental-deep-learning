@@ -75,13 +75,16 @@ class TemporalModelBase(nn.Module):
         x = x.permute(0, 2, 1)
         
         x = self._forward_blocks(x, sz)
-        x = x.view(sz[0], -1, self.num_joints_out, 3*4)
+
+        mu, v, alpha, beta = torch.split(x, x.shape[-1] // 4, dim=-1)
+
+        evidential_output = {k: v.view(sz[0], -1, self.num_joints_out, 3) for k, v in
+                             {'gamma': mu, 'v': v, 'alpha': alpha, 'beta': beta}.items()}
 
         if self.training:
-            return x
+            return evidential_output
         else:
-            mu, v, alpha, beta = torch.split(x, x.shape[-1] // 4, dim=-1)
-            return mu
+            return evidential_output['gamma']
 
 class TemporalModel(TemporalModelBase):
     """

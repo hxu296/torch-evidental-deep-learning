@@ -408,7 +408,7 @@ if not args.evaluate:
                 optimizer.zero_grad()
 
                 # Predict 3D poses
-                predicted_3d_pos = model_pos_train(inputs_2d) # evidental result will be returned
+                predicted_3d_pos = model_pos_train(inputs_2d)  # evidential results dictionary will be returned
                 loss_3d_pos = edl.losses.continuous.EvidentialRegression(inputs_3d, predicted_3d_pos)
                 epoch_loss_3d_train += inputs_3d.shape[0]*inputs_3d.shape[1] * loss_3d_pos.item()
                 N += inputs_3d.shape[0]*inputs_3d.shape[1]

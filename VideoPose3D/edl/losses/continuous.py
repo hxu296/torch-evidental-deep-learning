@@ -4,12 +4,12 @@ import numpy as np
 
 def NIG_NLL(y, gamma, v, alpha, beta, reduce=True):
     twoBlambda = 2*beta*(1+v)
-    part1 = 0.5*torch.log(np.pi/v) # nan
-    part2 = - alpha*torch.log(twoBlambda) # nan
-    part3 = + (alpha+0.5) * torch.log(v*(y-gamma)**2 + twoBlambda) # nan
-    part4 = + torch.lgamma(alpha)
-    part5 = - torch.lgamma(alpha+0.5)
-    nll = part1 + part2 + part3 + part4 + part5
+    nll = 0.5 * torch.log(np.pi / v) \
+          - alpha * torch.log(twoBlambda) \
+          + (alpha + 0.5) * torch.log(v * (y - gamma) ** 2 + twoBlambda) \
+          + torch.lgamma(alpha) \
+          - torch.lgamma(alpha + 0.5)
+
     return torch.mean(nll) if reduce else nll
 
 def KL_NIG(mu1, v1, a1, b1, mu2, v2, a2, b2):
@@ -36,7 +36,6 @@ def NIG_Reg(y, gamma, v, alpha, beta, omega=0.01, reduce=True, kl=False):
     
 
 def EvidentialRegression(y_true, evidential_output, coeff=1.0):
-    gamma, v, alpha, beta = torch.split(evidential_output, evidential_output.shape[-1]//4, dim=-1)
-    loss_nll = NIG_NLL(y_true, gamma, v, alpha, beta)
-    loss_reg = NIG_Reg(y_true, gamma, v, alpha, beta)
+    loss_nll = NIG_NLL(y_true, **evidential_output)
+    loss_reg = NIG_Reg(y_true, **evidential_output)
     return loss_nll + coeff * loss_reg
